@@ -148,6 +148,8 @@ class RiskState:
     def _check_capital_base(self) -> tuple[bool, str]:
         if self.current_equity <= 0:
             return False, "Account balance is zero or negative"
+        if self.current_equity < settings.min_trading_equity:
+            return False, f"Equity ${self.current_equity:.0f} below minimum ${settings.min_trading_equity:.0f}"
         if self.drawdown >= settings.max_drawdown:
             return False, f"Max drawdown exceeded ({self.drawdown*100:.1f}%)"
         return True, ""
@@ -233,9 +235,13 @@ class RiskState:
         if size < min_size_by_value:
             size = min_size_by_value
 
-        max_notional = self.current_equity * 3.0 / max(entry_price, 0.001)
+        max_notional = self.current_equity * 2.0 / max(entry_price, 0.001)
         if size > max_notional:
             size = max_notional
+
+        absolute_max = settings.initial_capital * settings.max_position_size_pct / max(entry_price, 0.001)
+        if size > absolute_max:
+            size = absolute_max
 
         return size
 
