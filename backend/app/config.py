@@ -37,7 +37,7 @@ class Settings:
     default_slippage: float = float(os.getenv("DEFAULT_SLIPPAGE", "0.001"))
     min_confidence: int = int(os.getenv("MIN_CONFIDENCE", "30"))
     min_position_value: float = float(os.getenv("MIN_POSITION_VALUE", "1.0"))
-    min_trading_equity: float = float(os.getenv("MIN_TRADING_EQUITY", "200.0"))
+    min_trading_equity: float = float(os.getenv("MIN_TRADING_EQUITY", "10.0"))
     max_position_size_pct: float = float(os.getenv("MAX_POSITION_SIZE_PCT", "0.02"))
 
     # Trading config
