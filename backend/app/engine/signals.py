@@ -249,7 +249,7 @@ def _scalping_signal(candles: list[dict], regime: dict | None = None) -> dict:
     atr_val = atr_vals[-1] if atr_vals[-1] is not None else (closes[-1] * 0.015)
     atr_pct = atr_val / closes[-1] * 100 if closes[-1] > 0 else 1.5
 
-    if atr_pct < 0.5 or atr_pct > 5:
+    if atr_pct < 0.1 or atr_pct > 5:
         return {"action": "HOLD", "confidence": 15, "reason": f"ATR={atr_pct:.1f}% outside scalp range"}
 
     buy_score = 0
@@ -289,8 +289,8 @@ def _scalping_signal(candles: list[dict], regime: dict | None = None) -> dict:
         sell_score += 1
 
     if buy_score >= 4:
-        return {"action": "BUY", "confidence": min(50 + buy_score * 8, 78), "reason": f"Scalp buy: {', '.join(reasons)}"}
+        return {"action": "BUY", "confidence": min(50 + buy_score * 10, 95), "reason": f"Scalp buy: {', '.join(reasons)}"}
     if sell_score >= 4:
-        return {"action": "SELL", "confidence": min(50 + sell_score * 8, 78), "reason": f"Scalp sell: {', '.join(reasons)}"}
+        return {"action": "SELL", "confidence": min(50 + sell_score * 10, 95), "reason": f"Scalp sell: {', '.join(reasons)}"}
 
     return {"action": "HOLD", "confidence": 20, "reason": "No scalping opportunity"}

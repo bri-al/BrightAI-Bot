@@ -107,8 +107,12 @@ class TradingScheduler:
                     closes_s = [c["close"] for c in candles]
                     atr_vals_local = atr(highs_s, lows_s, closes_s, 14)
                     atr_val_local = atr_vals_local[-1] if atr_vals_local[-1] is not None else price * 0.02
-                    sl = price - 1.5 * atr_val_local if direction == "long" else price + 1.5 * atr_val_local
-                    tp = price + 3.0 * atr_val_local if direction == "long" else price - 3.0 * atr_val_local
+                    if sym_strategy == "scalping":
+                        sl = price - 0.5 * atr_val_local if direction == "long" else price + 0.5 * atr_val_local
+                        tp = price + 1.0 * atr_val_local if direction == "long" else price - 1.0 * atr_val_local
+                    else:
+                        sl = price - 1.5 * atr_val_local if direction == "long" else price + 1.5 * atr_val_local
+                        tp = price + 3.0 * atr_val_local if direction == "long" else price - 3.0 * atr_val_local
 
                     open_count = await db.scalar(
                         select(func.count(Trade.id)).where(Trade.status == "open")

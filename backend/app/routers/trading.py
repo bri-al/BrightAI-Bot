@@ -136,8 +136,12 @@ async def execute_trade(symbol: str, db: AsyncSession = Depends(get_db), auth: s
     closes = [c["close"] for c in candles]
     atr_vals = atr(highs, lows, closes, 14)
     atr_val = atr_vals[-1] if atr_vals[-1] is not None else price * 0.02
-    sl = price - 1.5 * atr_val if direction == "long" else price + 1.5 * atr_val
-    tp = price + 3.0 * atr_val if direction == "long" else price - 3.0 * atr_val
+    if sym_strategy == "scalping":
+        sl = price - 0.5 * atr_val if direction == "long" else price + 0.5 * atr_val
+        tp = price + 1.0 * atr_val if direction == "long" else price - 1.0 * atr_val
+    else:
+        sl = price - 1.5 * atr_val if direction == "long" else price + 1.5 * atr_val
+        tp = price + 3.0 * atr_val if direction == "long" else price - 3.0 * atr_val
 
     regime_name = signal.get("regime", "unknown")
     valid, msg = risk_engine.validate_trade(price, sl, tp, direction, open_count, symbol)

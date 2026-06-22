@@ -41,23 +41,17 @@ class Settings:
     max_position_size_pct: float = float(os.getenv("MAX_POSITION_SIZE_PCT", "0.02"))
 
     # Trading config
-    default_timeframe: str = os.getenv("DEFAULT_TIMEFRAME", "5m")
-    scan_interval_seconds: int = int(os.getenv("SCAN_INTERVAL", "60"))
+    default_timeframe: str = os.getenv("DEFAULT_TIMEFRAME", "1m")
+    scan_interval_seconds: int = int(os.getenv("SCAN_INTERVAL", "30"))
     strategy: Literal["momentum", "mean_reversion", "scalping", "adaptive"] = os.getenv(
-        "STRATEGY", "adaptive"
+        "STRATEGY", "scalping"
     )
 
-    # Per-symbol strategy mapping (overrides `strategy` for specific symbols)
-    # Based on 5m backtest (30 days, $100):
-    #   BTCUSDT -> momentum_tf (+68.91%, DD=13.2%) — momentum with 1h trend filter
-    #   EURUSD  -> adaptive      (+52.87%, DD=18.7%) — regime-gated momentum/meanrev/scalp
-    #   GBPUSD  -> momentum_tf   (+28.22%, DD=19.2%) — momentum with 1h trend filter
-    #   XAUUSD  -> momentum      (+84.40%, DD=16.9%) — pure momentum confluence
     per_symbol_strategy: dict = field(default_factory=lambda: {
-        "BTCUSDT": "momentum_tf",
-        "EURUSD": "adaptive",
-        "GBPUSD": "momentum_tf",
-        "XAUUSD": "momentum",
+        "BTCUSDT": "scalping",
+        "EURUSD": "scalping",
+        "GBPUSD": "scalping",
+        "XAUUSD": "scalping",
     })
 
     # Broker selection
